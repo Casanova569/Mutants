@@ -1,45 +1,17 @@
-package com.magneto.mutants.services.mutant;
+package com.magneto.mutants.services.mutant.impl;
 
-import com.magneto.mutants.exceptions.MutantDnaException;
-import com.magneto.mutants.models.mutant.Mutant;
-import com.magneto.mutants.repositories.MutantRepository;
+import com.magneto.mutants.services.mutant.IIsMutantDnaService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MutantService {
+public class IsMutantDnaService implements IIsMutantDnaService {
 
     private static final List<String> MUTANT_DNA_SEQUENCES = List.of("AAAA", "CCCC", "GGGG", "TTTT");
 
-    @Autowired
-    private MutantRepository mutantRepository;
-
-    public Mutant createMutant(Mutant mutant) {
-        List<String> dna = mutant.getDna();
-        final boolean isValid = isValidDna(dna);
-        if (!isValid) {
-            throw new MutantDnaException("The matrix given is invalid");
-        }
-        dna = dna.stream().map(String::toUpperCase).collect(Collectors.toList());
-
-        if (3 < 2) {
-            mutantRepository.save(mutant);
-        }
-        /*
-        if (isMutant(dna)) {
-            return mutantRepository.save(mutant);
-        } else {
-            // 1 REPOSITORY
-        }
-         */
-        return mutant;
-    }
-
-    private boolean isMutant(final List<String> dna) {
+    public boolean isMutant(final List<String> dna) {
         final int listSize = dna.size();
         int x = 0;
         boolean isMutantDna = false;
@@ -58,7 +30,8 @@ public class MutantService {
     }
 
     private boolean checkVerticalSequence(final List<String> dna, final int index) {
-        final String column = dna.stream().map(s -> s.substring(index, index + 1)).collect(Collectors.joining());
+        final String column = dna.stream().map(s -> s.substring(index, index + 1)).collect(
+                Collectors.joining());
         return MUTANT_DNA_SEQUENCES.stream().anyMatch(column::contains);
     }
 
@@ -106,20 +79,5 @@ public class MutantService {
                     || MUTANT_DNA_SEQUENCES.stream().anyMatch(bottomDiagonal::contains);
         }
         return isMutantDna;
-    }
-
-    private boolean isValidDna(final List<String> dna) {
-        if (dna.isEmpty()) {
-            return false;
-        }
-        boolean isCharactersValid = dna.stream().allMatch(s -> Pattern.matches("[ACGTacgt]+", s));
-        if (!isCharactersValid) {
-            return false;
-        }
-        final int rowSize = dna.size();
-        final List<Integer> columnListSizes = dna.stream().map(String::length)
-                .collect(Collectors.toList());
-        // Check if it is a square matrix
-        return columnListSizes.stream().allMatch(columnSize -> columnSize == rowSize);
     }
 }
