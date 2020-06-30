@@ -1,111 +1,114 @@
 package com.magneto.mutants.services.mutant;
 
-import com.magneto.mutants.exceptions.MutantDNAExepction;
+import com.magneto.mutants.exceptions.MutantDnaException;
 import com.magneto.mutants.models.mutant.Mutant;
+import com.magneto.mutants.repositories.MutantRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MutantService {
 
-    public static final List<String> mutantDNA = List.of("AAAA", "CCCC", "GGGG", "TTTT");
+    private static final List<String> MUTANT_DNA_SEQUENCES = List.of("AAAA", "CCCC", "GGGG", "TTTT");
 
-    public Mutant createMutant(final Mutant mutant) {
+    @Autowired
+    private MutantRepository mutantRepository;
+
+    public Mutant createMutant(Mutant mutant) {
         List<String> dna = mutant.getDna();
-        final boolean isValid = isValidDNA(dna);
+        final boolean isValid = isValidDna(dna);
         if (!isValid) {
-            throw new MutantDNAExepction("The matrix given is invalid");
+            throw new MutantDnaException("The matrix given is invalid");
         }
         dna = dna.stream().map(String::toUpperCase).collect(Collectors.toList());
+
+        if (3 < 2) {
+            mutantRepository.save(mutant);
+        }
+        /*
         if (isMutant(dna)) {
-            // 2 REPOSITORIES
+            return mutantRepository.save(mutant);
         } else {
             // 1 REPOSITORY
         }
+         */
         return mutant;
-    /*
-    try {
-      return new Mutant();
-    } catch (ExecutionException e) {
-      throw new MutantServiceException("Failed to post Mutant in MutantService");
-    }
-
-     */
     }
 
     private boolean isMutant(final List<String> dna) {
         final int listSize = dna.size();
         int x = 0;
-        boolean isMutantDNA = false;
-        while (x < listSize && !isMutantDNA) {
+        boolean isMutantDna = false;
+        while (x < listSize && !isMutantDna) {
             if (checkHorizontalSequence(dna,x) || checkVerticalSequence(dna,x)
                     || checkDiagonalLeftToRight(dna,x,listSize)) {
-                isMutantDNA = true;
+                isMutantDna = true;
             }
             x++;
         }
-        return isMutantDNA;
+        return isMutantDna;
     }
 
     private boolean checkHorizontalSequence(final List<String> dna, final int index) {
-        return mutantDNA.stream().anyMatch(dna.get(index)::contains);
+        return MUTANT_DNA_SEQUENCES.stream().anyMatch(dna.get(index)::contains);
     }
 
     private boolean checkVerticalSequence(final List<String> dna, final int index) {
         final String column = dna.stream().map(s -> s.substring(index, index + 1)).collect(Collectors.joining());
-        return mutantDNA.stream().anyMatch(column::contains);
+        return MUTANT_DNA_SEQUENCES.stream().anyMatch(column::contains);
     }
 
     private boolean checkDiagonalLeftToRight(final List<String> dna, final int index, final int limit) {
         List<String> mainDiagonal = new ArrayList<>();
         List<String> upperDiagonal = new ArrayList<>();
         List<String> bottomDiagonal = new ArrayList<>();
-        boolean isMutantDNA = false;
+        boolean isMutantDna = false;
         int startIndex = 0;
         if (index == 0) {
             for(int x = index; x < limit; x++) {
                 mainDiagonal.add(dna.get(x).substring(x, x + 1));
             }
-            isMutantDNA = mutantDNA.stream().anyMatch(mainDiagonal::contains);
+            isMutantDna = MUTANT_DNA_SEQUENCES.stream().anyMatch(mainDiagonal::contains);
         } else {
             for(int x = index; x < limit; x++) {
                 upperDiagonal.add(dna.get(startIndex).substring(x, x + 1));
                 bottomDiagonal.add(dna.get(x).substring(startIndex, startIndex + 1));
                 startIndex++;
             }
-            isMutantDNA = mutantDNA.stream().anyMatch(upperDiagonal::contains)
-                    || mutantDNA.stream().anyMatch(bottomDiagonal::contains);
+            isMutantDna = MUTANT_DNA_SEQUENCES.stream().anyMatch(upperDiagonal::contains)
+                    || MUTANT_DNA_SEQUENCES.stream().anyMatch(bottomDiagonal::contains);
         }
-        return isMutantDNA;
+        return isMutantDna;
     }
 
     private boolean checkDiagonalRightToLeft(final List<String> dna, final int index, final int limit) {
         List<String> secondaryDiagonal = new ArrayList<>();
         List<String> upperDiagonal = new ArrayList<>();
         List<String> bottomDiagonal = new ArrayList<>();
-        boolean isMutantDNA = false;
+        boolean isMutantDna = false;
         int startIndex = 0;
         if (index == 0) {
             for(int x = index; x < limit; x++) {
                 secondaryDiagonal.add(dna.get(x).substring(limit - x - 1, limit - x));
             }
-            isMutantDNA = mutantDNA.stream().anyMatch(secondaryDiagonal::contains);
+            isMutantDna = MUTANT_DNA_SEQUENCES.stream().anyMatch(secondaryDiagonal::contains);
         } else {
             for(int x = index; x < limit; x++) {
                 upperDiagonal.add(dna.get(startIndex).substring(limit - x - 1, limit - x));
                 bottomDiagonal.add(dna.get(x).substring(limit - startIndex - 1, limit - startIndex));
                 startIndex++;
             }
-            isMutantDNA = mutantDNA.stream().anyMatch(upperDiagonal::contains)
-                    || mutantDNA.stream().anyMatch(bottomDiagonal::contains);
+            isMutantDna = MUTANT_DNA_SEQUENCES.stream().anyMatch(upperDiagonal::contains)
+                    || MUTANT_DNA_SEQUENCES.stream().anyMatch(bottomDiagonal::contains);
         }
-        return isMutantDNA;
+        return isMutantDna;
     }
 
-    private boolean isValidDNA(final List<String> dna) {
+    private boolean isValidDna(final List<String> dna) {
         if (dna.isEmpty()) {
             return false;
         }

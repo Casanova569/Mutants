@@ -17,7 +17,6 @@ public class MutantController {
 
     @PostMapping("/")
     public Mutant create(@RequestBody final Mutant mutant) {
-        //final Mutant createdMutant = m
-        return new Mutant();
+        return mutantService.createMutant(mutant);
     }
 }
