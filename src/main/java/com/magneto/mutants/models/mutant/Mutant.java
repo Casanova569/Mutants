@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Mutant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
