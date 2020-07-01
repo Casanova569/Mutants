@@ -1,6 +1,7 @@
 package com.magneto.mutants.controllers;
 
 import com.magneto.mutants.models.mutant.Mutant;
+import com.magneto.mutants.models.mutant.MutantDto;
 import com.magneto.mutants.services.mutant.IMutantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +17,7 @@ public class MutantController {
     private IMutantService mutantService;
 
     @PostMapping("/")
-    public Mutant create(@RequestBody final Mutant mutant) {
-        //return mutantService.createMutant(mutant);
-        return mutantService.createMutant(mutant);
+    public Mutant create(@RequestBody final MutantDto mutantDto) {
+        return mutantService.createMutant(mutantDto);
     }
 }

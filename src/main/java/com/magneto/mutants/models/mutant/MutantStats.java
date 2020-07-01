@@ -1,5 +1,6 @@
 package com.magneto.mutants.models.mutant;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,11 +20,14 @@ public class MutantStats {
     private Long id;
 
     @Column
-    private Long countMutantDna = 0L;
+    private Long countMutantDna;
 
     @Column
-    private Long countHumanDna = 0L;
+    private Long countHumanDna;
 
     @Column
-    private Double ratio = 1D;
+    private Double ratio;
+
+    @Column
+    private LocalDateTime updatedDate;
 }

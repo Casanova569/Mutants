@@ -1,15 +1,12 @@
 package com.magneto.mutants.models.mutant;
 
-import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @Entity
 @Data
@@ -22,6 +19,9 @@ public class Mutant {
     private Long id;
 
     @Column
-    @ElementCollection
-    private List<String> dna;
+    private String dna;
+
+    public Mutant(final MutantDto mutantDto) {
+        this.dna = mutantDto.getDna().toString();
+    }
 }

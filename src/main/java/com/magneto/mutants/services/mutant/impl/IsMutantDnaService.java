@@ -10,14 +10,19 @@ import org.springframework.stereotype.Service;
 public class IsMutantDnaService implements IIsMutantDnaService {
 
     private static final List<String> MUTANT_DNA_SEQUENCES = List.of("AAAA", "CCCC", "GGGG", "TTTT");
+    private static final int MUTANT_DNA_SIZE_NEEDED_SEQUENCE = 4;
 
     public boolean isMutant(final List<String> dna) {
         final int listSize = dna.size();
+        if (hasFewElements(listSize)) {
+            return false;
+        }
         int x = 0;
         boolean isMutantDna = false;
         while (x < listSize && !isMutantDna) {
-            if (checkHorizontalSequence(dna,x) || checkVerticalSequence(dna,x)
-                    || checkDiagonalLeftToRight(dna,x,listSize)) {
+            if (checkHorizontalSequence(dna, x) || checkVerticalSequence(dna, x)
+                    || checkDiagonalLeftToRight(dna, x, listSize)
+                    || checkDiagonalRightToLeft(dna, x, listSize)) {
                 isMutantDna = true;
             }
             x++;
@@ -36,6 +41,9 @@ public class IsMutantDnaService implements IIsMutantDnaService {
     }
 
     private boolean checkDiagonalLeftToRight(final List<String> dna, final int index, final int limit) {
+        if (hasFewElements(index)) {
+            return false;
+        }
         List<String> mainDiagonal = new ArrayList<>();
         List<String> upperDiagonal = new ArrayList<>();
         List<String> bottomDiagonal = new ArrayList<>();
@@ -59,6 +67,9 @@ public class IsMutantDnaService implements IIsMutantDnaService {
     }
 
     private boolean checkDiagonalRightToLeft(final List<String> dna, final int index, final int limit) {
+        if (hasFewElements(index)) {
+            return false;
+        }
         List<String> secondaryDiagonal = new ArrayList<>();
         List<String> upperDiagonal = new ArrayList<>();
         List<String> bottomDiagonal = new ArrayList<>();
@@ -79,5 +90,9 @@ public class IsMutantDnaService implements IIsMutantDnaService {
                     || MUTANT_DNA_SEQUENCES.stream().anyMatch(bottomDiagonal::contains);
         }
         return isMutantDna;
+    }
+
+    private boolean hasFewElements(final int size) {
+        return size < MUTANT_DNA_SIZE_NEEDED_SEQUENCE;
     }
 }

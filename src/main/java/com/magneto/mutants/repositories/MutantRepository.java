@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.CrudRepository;
 
 @Repository
-public interface MutantRepository extends CrudRepository<Mutant, Long>{
+public interface MutantRepository extends CrudRepository<Mutant, Long> {
 
 }
