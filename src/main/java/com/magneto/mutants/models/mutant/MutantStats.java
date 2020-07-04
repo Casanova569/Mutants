@@ -1,5 +1,7 @@
 package com.magneto.mutants.models.mutant;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
+@ApiModel
 public class MutantStats {
 
     @Id
@@ -20,14 +23,18 @@ public class MutantStats {
     private Long id;
 
     @Column
+    @ApiModelProperty
     private Long countMutantDna;
 
     @Column
+    @ApiModelProperty
     private Long countHumanDna;
 
     @Column
+    @ApiModelProperty
     private Double ratio;
 
     @Column
+    @ApiModelProperty
     private LocalDateTime updatedDate;
 }
