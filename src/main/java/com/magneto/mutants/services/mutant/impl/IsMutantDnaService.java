@@ -1,7 +1,6 @@
 package com.magneto.mutants.services.mutant.impl;
 
 import com.magneto.mutants.services.mutant.IIsMutantDnaService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -41,23 +40,24 @@ public class IsMutantDnaService implements IIsMutantDnaService {
     }
 
     private boolean checkDiagonalLeftToRight(final List<String> dna, final int index, final int limit) {
-        if (hasFewElements(index)) {
+        final Integer sequenceSize = limit - index;
+        if (hasFewElements(sequenceSize)) {
             return false;
         }
-        List<String> mainDiagonal = new ArrayList<>();
-        List<String> upperDiagonal = new ArrayList<>();
-        List<String> bottomDiagonal = new ArrayList<>();
+        String mainDiagonal = "";
+        String upperDiagonal = "";
+        String bottomDiagonal = "";
         boolean isMutantDna = false;
         int startIndex = 0;
         if (index == 0) {
             for(int x = index; x < limit; x++) {
-                mainDiagonal.add(dna.get(x).substring(x, x + 1));
+                mainDiagonal = mainDiagonal + dna.get(x).substring(x, x + 1);
             }
             isMutantDna = MUTANT_DNA_SEQUENCES.stream().anyMatch(mainDiagonal::contains);
         } else {
             for(int x = index; x < limit; x++) {
-                upperDiagonal.add(dna.get(startIndex).substring(x, x + 1));
-                bottomDiagonal.add(dna.get(x).substring(startIndex, startIndex + 1));
+                upperDiagonal = upperDiagonal + dna.get(startIndex).substring(x, x + 1);
+                bottomDiagonal = bottomDiagonal + dna.get(x).substring(startIndex, startIndex + 1);
                 startIndex++;
             }
             isMutantDna = MUTANT_DNA_SEQUENCES.stream().anyMatch(upperDiagonal::contains)
@@ -67,23 +67,24 @@ public class IsMutantDnaService implements IIsMutantDnaService {
     }
 
     private boolean checkDiagonalRightToLeft(final List<String> dna, final int index, final int limit) {
-        if (hasFewElements(index)) {
+        final Integer sequenceSize = limit - index;
+        if (hasFewElements(sequenceSize)) {
             return false;
         }
-        List<String> secondaryDiagonal = new ArrayList<>();
-        List<String> upperDiagonal = new ArrayList<>();
-        List<String> bottomDiagonal = new ArrayList<>();
+        String secondaryDiagonal = "";
+        String upperDiagonal = "";
+        String bottomDiagonal = "";
         boolean isMutantDna = false;
         int startIndex = 0;
         if (index == 0) {
             for(int x = index; x < limit; x++) {
-                secondaryDiagonal.add(dna.get(x).substring(limit - x - 1, limit - x));
+                secondaryDiagonal = secondaryDiagonal + dna.get(x).substring(limit - x - 1, limit - x);
             }
             isMutantDna = MUTANT_DNA_SEQUENCES.stream().anyMatch(secondaryDiagonal::contains);
         } else {
             for(int x = index; x < limit; x++) {
-                upperDiagonal.add(dna.get(startIndex).substring(limit - x - 1, limit - x));
-                bottomDiagonal.add(dna.get(x).substring(limit - startIndex - 1, limit - startIndex));
+                upperDiagonal = upperDiagonal + dna.get(startIndex).substring(limit - x - 1, limit - x);
+                bottomDiagonal = bottomDiagonal + dna.get(x).substring(limit - startIndex - 1, limit - startIndex);
                 startIndex++;
             }
             isMutantDna = MUTANT_DNA_SEQUENCES.stream().anyMatch(upperDiagonal::contains)

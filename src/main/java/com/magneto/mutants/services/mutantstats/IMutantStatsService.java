@@ -7,5 +7,5 @@ import com.magneto.mutants.services.mutantstats.impl.MutantStatsService;
 @ImplementedBy(MutantStatsService.class)
 public interface IMutantStatsService {
 
-    void updateMutantStats(boolean isMutant);
+    boolean updateMutantStats(boolean isMutant);
 }

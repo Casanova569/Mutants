@@ -1,6 +1,8 @@
 package com.magneto.mutants.services.mutant.impl;
 
 import com.magneto.mutants.exceptions.MutantDnaException;
+import com.magneto.mutants.exceptions.MutantServiceException;
+import com.magneto.mutants.exceptions.NotMutantDnaForbiddenException;
 import com.magneto.mutants.models.mutant.Mutant;
 import com.magneto.mutants.models.mutant.MutantDto;
 import com.magneto.mutants.repositories.MutantRepository;
@@ -16,17 +18,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class MutantService implements IMutantService {
 
-    @Autowired
-    private MutantRepository mutantRepository;
+    private final MutantRepository mutantRepository;
+
+    private final IIsValidDnaService isValidDna;
+
+    private final IIsMutantDnaService isMutantDna;
+
+    private final IMutantStatsService mutantStatsService;
 
     @Autowired
-    private IIsValidDnaService isValidDna;
-
-    @Autowired
-    private IIsMutantDnaService isMutantDna;
-
-    @Autowired
-    private IMutantStatsService mutantStatsService;
+    public MutantService(final MutantRepository mutantRepository,
+            final IIsValidDnaService isValidDna,
+            final IIsMutantDnaService isMutantDna,
+            final IMutantStatsService mutantStatsService) {
+        this.mutantRepository = mutantRepository;
+        this.isValidDna = isValidDna;
+        this.isMutantDna = isMutantDna;
+        this.mutantStatsService = mutantStatsService;
+    }
 
     public Mutant createMutant(MutantDto mutantDto) {
         List<String> dna = mutantDto.getDna();
@@ -38,9 +47,14 @@ public class MutantService implements IMutantService {
         final Mutant mutant = new Mutant(mutantDto);
         final boolean isMutant = isMutantDna.isMutant(dna);
         mutantStatsService.updateMutantStats(isMutant);
-        if (isMutant) {
-            return mutantRepository.save(mutant);
+        if (!isMutant) {
+            throw new NotMutantDnaForbiddenException("Humans are not allowed here");
         }
-        return mutant;
+        try {
+            return mutantRepository.save(mutant);
+        } catch (Exception e) {
+            throw new MutantServiceException("Failed MutantService to save mutant", e);
+        }
+
     }
 }

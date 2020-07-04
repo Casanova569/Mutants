@@ -1,5 +1,6 @@
 package com.magneto.mutants.services.mutantstats.impl;
 
+import com.magneto.mutants.exceptions.MutantStatsServiceException;
 import com.magneto.mutants.models.mutant.MutantStats;
 import com.magneto.mutants.repositories.MutantStatsRepository;
 import com.magneto.mutants.services.mutantstats.IMutantStatsService;
@@ -12,29 +13,34 @@ import org.springframework.stereotype.Service;
 @Service
 public class MutantStatsService implements IMutantStatsService {
 
+    private final MutantStatsRepository mutantStatsRepository;
+
     @Autowired
-    private MutantStatsRepository mutantStatsRepository;
+    public MutantStatsService(final MutantStatsRepository mutantStatsRepository) {
+        this.mutantStatsRepository = mutantStatsRepository;
+    }
 
     @Override
-    public void updateMutantStats(boolean isMutant) {
+    public boolean updateMutantStats(boolean isMutant) {
         final Optional<MutantStats> mutantStatsOptional = mutantStatsRepository.findLastId(
                 PageRequest.of(0, 1));
         MutantStats mutantStats = new MutantStats();
-        Long count_human = 0L;
-        Long count_mutant = 0L;
-        if (!mutantStatsOptional.isEmpty()) {
-            count_mutant = mutantStatsOptional.get().getCountMutantDna();
-            count_human = mutantStatsOptional.get().getCountHumanDna();
-        }
-        count_human++;
-        mutantStats.setCountHumanDna(count_human);
+        Long countHuman = mutantStatsOptional.isEmpty() ? 0L : mutantStatsOptional.get().getCountHumanDna();
+        Long countMutant = mutantStatsOptional.isEmpty() ? 0L : mutantStatsOptional.get().getCountMutantDna();
+        countHuman++;
+        mutantStats.setCountHumanDna(countHuman);
         if (isMutant) {
-            count_mutant++;
+            countMutant++;
         }
-        mutantStats.setCountMutantDna(count_mutant);
-        final Double ratio = Double.valueOf(count_mutant) / Double.valueOf(count_human);
+        mutantStats.setCountMutantDna(countMutant);
+        final Double ratio = Double.valueOf(countMutant) / Double.valueOf(countHuman);
         mutantStats.setRatio(ratio);
         mutantStats.setUpdatedDate(LocalDateTime.now());
-        mutantStatsRepository.save(mutantStats);
+        try {
+            mutantStatsRepository.save(mutantStats);
+            return true;
+        } catch (Exception e) {
+            throw new MutantStatsServiceException("Failed MutantStatsService to save mutant stats", e);
+        }
     }
 }
