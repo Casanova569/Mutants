@@ -43,4 +43,10 @@ public class MutantStatsService implements IMutantStatsService {
             throw new MutantStatsServiceException("Failed MutantStatsService to save mutant stats", e);
         }
     }
+
+    @Override
+    public MutantStats get() {
+        return mutantStatsRepository.findLastId(PageRequest.of(0, 1))
+                .orElseThrow(() -> new MutantStatsServiceException("Failed MutantStatsService to obtain mutant stats"));
+    }
 }
