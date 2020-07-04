@@ -1,12 +1,12 @@
 package com.magneto.mutants.services.mutantstats;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.magneto.mutants.exceptions.MutantServiceException;
 import com.magneto.mutants.exceptions.MutantStatsServiceException;
 import com.magneto.mutants.models.mutant.MutantStats;
 import com.magneto.mutants.repositories.MutantStatsRepository;
@@ -49,6 +49,24 @@ public class MutantStatsServiceTest {
         final MutantStatsService mutantStatsService = new MutantStatsService(mutantStatsRepository);
         assertThrows(MutantStatsServiceException.class,
                 () -> mutantStatsService.updateMutantStats(true));
+    }
+
+    @Test
+    void whenGetMutantStatsThenReturnMutantStats() {
+        final MutantStatsRepository mutantStatsRepository = mock(MutantStatsRepository.class);
+        when(mutantStatsRepository.findLastId(any())).thenReturn(Optional.of(mockMutantStatsIsMutant()));
+        final MutantStatsService mutantStatsService = new MutantStatsService(mutantStatsRepository);
+        final MutantStats mutantStats = mutantStatsService.get();
+        assertEquals(mockMutantStatsIsMutant(), mutantStats);
+    }
+
+    @Test
+    void whenGetMutantStatsFailThenThrowInternalServerError() {
+        final MutantStatsRepository mutantStatsRepository = mock(MutantStatsRepository.class);
+        when(mutantStatsRepository.findLastId(any())).thenThrow(MutantStatsServiceException.class);
+        final MutantStatsService mutantStatsService = new MutantStatsService(mutantStatsRepository);
+        assertThrows(MutantStatsServiceException.class,
+                () -> mutantStatsService.get());
     }
 
     private MutantStats mockMutantStatsIsMutant() {
