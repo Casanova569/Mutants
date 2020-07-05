@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 public class IsMutantDnaServiceTest {
 
     @Test
-    void whenIsMutantInHorizontalSequenceThenReturnTrue() {
+    void whenIsMutantThenReturnTrue() {
         final IIsMutantDnaService isMutantDnaService = new IsMutantDnaService();
         final List<String> dna = List.of("AAAAGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG");
         final boolean isMutant = isMutantDnaService.isMutant(dna);

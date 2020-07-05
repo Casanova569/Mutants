@@ -129,11 +129,11 @@ You can download from the official page: https://www.postman.com/downloads/
 
 To test you need to send a request. For example:
 
-- To test https://mutant-test-x.herokuapp.com/mutant/
+- To test https://mutants-x.herokuapp.com/mutant/
 You need to do a post request with the follow json body:
 ```
 {
-	"dna": ["ACTG","GACT","TGAC","CTGA"]
+	"dna": ["AAAAGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
 }
 ```
-- For test https://mutant-test-x.herokuapp.com/mutant/stats you only need to send a GET request.
+- For test https://mutants-x.herokuapp.com/mutant/stats you only need to send a GET request.
