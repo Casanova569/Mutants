@@ -10,6 +10,7 @@ public class IsMutantDnaService implements IIsMutantDnaService {
 
     private static final List<String> MUTANT_DNA_SEQUENCES = List.of("AAAA", "CCCC", "GGGG", "TTTT");
     private static final int MUTANT_DNA_SIZE_NEEDED_SEQUENCE = 4;
+    private static final int MUTANT_DNA_SEQUENCES_NEEDED = 2;
 
     public boolean isMutant(final List<String> dna) {
         final int listSize = dna.size();
@@ -17,11 +18,14 @@ public class IsMutantDnaService implements IIsMutantDnaService {
             return false;
         }
         int x = 0;
+        int count_sequences = 0;
         boolean isMutantDna = false;
         while (x < listSize && !isMutantDna) {
-            if (checkHorizontalSequence(dna, x) || checkVerticalSequence(dna, x)
-                    || checkDiagonalLeftToRight(dna, x, listSize)
-                    || checkDiagonalRightToLeft(dna, x, listSize)) {
+            count_sequences = checkHorizontalSequence(dna, x) ? count_sequences + 1 : count_sequences;
+            count_sequences = checkVerticalSequence(dna, x) ? count_sequences + 1 : count_sequences;
+            count_sequences = checkDiagonalLeftToRight(dna, x, listSize) ? count_sequences + 1 : count_sequences;
+            count_sequences = checkDiagonalRightToLeft(dna, x, listSize) ? count_sequences + 1 : count_sequences;
+            if (count_sequences >= MUTANT_DNA_SEQUENCES_NEEDED) {
                 isMutantDna = true;
             }
             x++;
