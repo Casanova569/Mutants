@@ -22,7 +22,6 @@
         3. [PgAdmin4](#pgadmin4)
     6. [Deploy](#deploy)
     7. [Postman](#postman)
-4. [Useful links](#useful-links)
     
 ## <a name="introduction"></a>Introduction
 The purpose of this repository is to fulfill the exam of Mercado Libre.
@@ -138,8 +137,3 @@ You need to do a post request with the follow json body:
 }
 ```
 - For test https://mutant-test-x.herokuapp.com/mutant/stats you only need to send a GET request.
-
-
-
-
-
